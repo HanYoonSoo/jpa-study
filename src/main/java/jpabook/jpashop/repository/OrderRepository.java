@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     public Order findOrderById(Long id);
 
 
-    @Query("select o from Order o join o.member m where o.status = :#{#orderSearch.orderStatus} and m.name = #{#orderSearch.memberName}")
-    public List<Order> findAll(@Param("orderSearch") OrderSearch orderSearch);
+//    @Query("select o from Order o join o.member m where o.status = :#{#orderSearch.orderStatus} and m.name = #{#orderSearch.memberName}")
+//    public List<Order> findAll(@Param("orderSearch") OrderSearch orderSearch);
 }
 
