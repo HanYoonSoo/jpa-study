@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface OrderCustom {
     public List<Order> findAll(@Param("orderSearch") OrderSearch orderSearch);
+
+    public List<Order> findAllWithMemberDelivery();
 }
