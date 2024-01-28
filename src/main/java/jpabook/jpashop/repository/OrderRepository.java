@@ -12,5 +12,10 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderCustom {
     public Order findOrderById(Long id);
 
+    @Query("select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+            "from Order o" +
+            " join o.member m" +
+            " join o.delivery d")
+    public List<OrderSimpleQueryDto> findOrderDtos();
 }
 

@@ -1,15 +1,12 @@
 package jpabook.jpashop.repository;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.QDelivery;
 import jpabook.jpashop.domain.QMember;
 import jpabook.jpashop.domain.QOrder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
