@@ -6,6 +6,7 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderItemQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
@@ -21,7 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * V1. 엔티티 직접 노출
@@ -66,7 +68,7 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAll(new OrderSearch());
         List<OrderDto> result = orders.stream()
                 .map(OrderDto::new)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return result;
     }
@@ -76,7 +78,7 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAllWithItem();
         List<OrderDto> result = orders.stream()
                 .map(OrderDto::new)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return result;
     }
@@ -91,7 +93,7 @@ public class OrderApiController {
 
         List<OrderDto> result = orders.stream()
                 .map(OrderDto::new)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return result;
     }
@@ -125,18 +127,33 @@ public class OrderApiController {
         return result;
     }
 
-    private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
+    @GetMapping("/api/v6/orders")
+    public List<OrderQueryDto> ordersV6() {
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+        return (List<OrderQueryDto>) flats.stream()
+                .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(),
+                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                        mapping(o -> new OrderItemQueryDto(o.getOrderId(),
+                                o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
+                        e.getKey().getAddress()));
+    }
+
+
+        private Map<Long, List<OrderItemQueryDto>> findOrderItemMap(List<Long> orderIds) {
         List<OrderItemQueryDto> orderItems = orderQueryRepository.findOrderItemsIn(orderIds);
 
         Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream()
-                .collect(Collectors.groupingBy(orderItemQueryDto -> orderItemQueryDto.getOrderId()));
+                .collect(groupingBy(orderItemQueryDto -> orderItemQueryDto.getOrderId()));
         return orderItemMap;
     }
 
     private List<Long> toOrdersIds(List<OrderQueryDto> result) {
         List<Long> orderIds = result.stream()
                 .map(o -> o.getOrderId())
-                .collect(Collectors.toList());
+                .collect(toList());
         return orderIds;
     }
 
@@ -164,7 +181,8 @@ public class OrderApiController {
             order.getOrderItems().stream().forEach(o -> o.getItem().getName());
             orderItems = order.getOrderItems().stream()
                     .map(OrderItemDto::new)
-                    .collect(Collectors.toList());
+                    .collect(toList());
+            ;
         }
     }
 
