@@ -182,7 +182,7 @@ public class OrderApiController {
             orderItems = order.getOrderItems().stream()
                     .map(OrderItemDto::new)
                     .collect(toList());
-            ;
+
         }
     }
 
