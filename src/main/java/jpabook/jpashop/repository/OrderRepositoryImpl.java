@@ -7,6 +7,7 @@ import jpabook.jpashop.domain.item.QItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class OrderRepositoryImpl implements OrderCustom{
             builder.and(order.status.eq(orderSearch.getOrderStatus()));
         }
 
-        if (orderSearch.getMemberName() != null && !orderSearch.getMemberName().isEmpty()) {
+        if (!StringUtils.hasText(orderSearch.getMemberName())) {
             builder.and(member.name.eq(orderSearch.getMemberName()));
         }
 
